@@ -23,8 +23,6 @@ namespace AutoPerfecto.Models
         public int? AutoId { get; set; }
         public Auto? Auto { get; set; }
 
-        public Compra() {
-            Fecha = DateTime.Now;
-        }
+       
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoPerfecto.Data;
 using AutoPerfecto.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoPerfecto.Controllers
 {
@@ -44,11 +45,15 @@ namespace AutoPerfecto.Controllers
         }
 
         // GET: Compras/Create
-        public async Task<IActionResult> Create(int AutoId)
+        public async Task<IActionResult> Create(int? id) // el identificador debe ser igual al asp-route-[nombreIdentificador] de la vista en la eti <a>
         {
-            //var seleccionAuto= await _context.Auto.FirstOrDefaultAsync(m => m.Id == AutoId);
-            ViewData["auto"] = AutoId;
+            //var seleccionAuto= await _context.Auto.FirstOrDefaultAsync(m => m.Id == AutoId);// envias un modelo
+            //var auto=  await _context.Auto.FirstOrDefaultAsync(m => m.Id == id);
+            ViewBag.Seleccion = id;
+            //ViewData["auto"] = autoSelec;// sirve mas para cadenas de texto por o si no debes formatear al tipo de dato que requieres con el as 
             ViewData["ClienteId"] = new SelectList(_context.Cliente, "Id" ,"Nombre");
+
+
             return View();
         }
 
@@ -58,15 +63,45 @@ namespace AutoPerfecto.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         
-        public async Task<IActionResult> Create([Bind("Id,PrecioVenta,Fecha,ClienteId,AutoId")] Compra compra)
+        public async Task<IActionResult> Create([Bind("PrecioVenta,Fecha,ClienteId,AutoId")] Compra compra,int? idauto) // el nobre de la variable debe ser igual al nombre que estas enviando desde la etiqueta a
         {
-            if (ModelState.IsValid)
+            var auto = await _context.Auto.FirstOrDefaultAsync(a => a.Id == idauto);
+            if (auto != null)
             {
-                _context.Add(compra);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!auto.Vendido)
+                {
+                    if (ModelState.IsValid)
+                    {
+                        _context.Compra.Add(compra);
+                        await _context.SaveChangesAsync();
+
+                        auto.Vendido=true;
+                        _context.Auto.Update(auto);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ViewBag.Seleccion = auto.Id;
+                        ViewData["ClienteId"] = new SelectList(_context.Cliente, "Id", "Nombre");
+                        return View(compra);
+                    }
+                }
+                else
+                {
+                    TempData["Mensaje"] = "¡El auto ya ha sido vendido!";
+                    ViewBag.Seleccion = auto.Id;
+                    ViewData["ClienteId"] = new SelectList(_context.Cliente, "Id", "Nombre");
+                    return View(compra);
+                }
             }
-            return View(compra);
+            else
+            {
+                TempData["Mensaje"] = "¡El auto no existe!";
+                ViewBag.Seleccion = auto.Id;
+                ViewData["ClienteId"] = new SelectList(_context.Cliente, "Id", "Nombre");
+                return View(compra);
+            }
         }
 
         // GET: Compras/Edit/5

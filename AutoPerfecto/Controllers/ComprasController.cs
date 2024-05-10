@@ -44,8 +44,11 @@ namespace AutoPerfecto.Controllers
         }
 
         // GET: Compras/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int AutoId)
         {
+            //var seleccionAuto= await _context.Auto.FirstOrDefaultAsync(m => m.Id == AutoId);
+            ViewData["auto"] = AutoId;
+            ViewData["ClienteId"] = new SelectList(_context.Cliente, "Id" ,"Nombre");
             return View();
         }
 
@@ -54,7 +57,8 @@ namespace AutoPerfecto.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PrecioVenta,Fecha,IdCliente,IdAuto")] Compra compra)
+        
+        public async Task<IActionResult> Create([Bind("Id,PrecioVenta,Fecha,ClienteId,AutoId")] Compra compra)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +90,7 @@ namespace AutoPerfecto.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PrecioVenta,Fecha,IdCliente,IdAuto")] Compra compra)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PrecioVenta,Fecha,ClienteId,AutoId")] Compra compra)
         {
             if (id != compra.Id)
             {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace AutoPerfecto.Models
@@ -8,8 +9,8 @@ namespace AutoPerfecto.Models
         [Key]
         public int Id { get; set; }
 
-        [DefaultValue(false)]
-        public bool? Vendido { get; set; }
+        [HiddenInput(DisplayValue =false)]
+        public bool Vendido { get; set; }
         [Required]
         public string Marca { get; set;}
         [Required]

@@ -1,4 +1,5 @@
-﻿@model AutoPerfecto.Models.Compra
+﻿@model AutoPerfecto.Models.Compra 
+
 
 @{
     ViewData["Title"] = "Create";
@@ -23,14 +24,14 @@
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
-                <input asp-for="IdCliente" class="form-control" />
-                <span asp-validation-for="IdCliente" class="text-danger"></span>
+                <label asp-for="ClienteId" class="control-label"></label>
+                <select asp-for="ClienteId" class="form-control" asp-items="ViewBag.ClienteId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="IdAuto" class="control-label"></label>
-                <input asp-for="IdAuto" class="form-control" />
-                <span asp-validation-for="IdAuto" class="text-danger"></span>
+                @* <label asp-for="AutoId" class="control-label"></label> *@
+                <p>@ViewData["auto"]</p>
+                <input asp-for="AutoId" class="form-control" type="hidden" value="@ViewData["auto"]"/>
+                <span asp-validation-for="AutoId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoPerfecto.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20240508233837_SegundaMigracion")]
-    partial class SegundaMigracion
+    [Migration("20240510003414_segunda Migracion")]
+    partial class segundaMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,7 @@ namespace AutoPerfecto.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Vendido")
+                    b.Property<bool>("Vendido")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -118,13 +118,19 @@ namespace AutoPerfecto.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClienteId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("IdAuto")
+                    b.Property<int?>("AutoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdCliente")
+                    b.Property<int?>("ClienteId")
                         .HasColumnType("int");
 
                     b.Property<float>("PrecioVenta")
@@ -132,7 +138,26 @@ namespace AutoPerfecto.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AutoId");
+
+                    b.HasIndex("ClienteId");
+
                     b.ToTable("Compra");
+                });
+
+            modelBuilder.Entity("AutoPerfecto.Models.Compra", b =>
+                {
+                    b.HasOne("AutoPerfecto.Models.Auto", "Auto")
+                        .WithMany()
+                        .HasForeignKey("AutoId");
+
+                    b.HasOne("AutoPerfecto.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId");
+
+                    b.Navigation("Auto");
+
+                    b.Navigation("Cliente");
                 });
 #pragma warning restore 612, 618
         }

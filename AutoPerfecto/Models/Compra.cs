@@ -14,12 +14,14 @@ namespace AutoPerfecto.Models
         [Required]
         public DateTime Fecha { get; set; }
 
-        [ForeignKey("IdCliente")]
-        public int? IdCliente { get; set; }
+        [ForeignKey("ClienteId")]
+        public int? ClienteId { get; set; }
+        public Cliente? Cliente { get; set; }
 
 
-        [ForeignKey("IdAuto")]
-        public int? IdAuto { get; set; }
+        [ForeignKey("AutoId")]
+        public int? AutoId { get; set; }
+        public Auto? Auto { get; set; }
 
         public Compra() {
             Fecha = DateTime.Now;
